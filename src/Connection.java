@@ -1,6 +1,5 @@
 
-// TODO change class name to ConnectionNode so don't have to implement generics for ConnectionType
-public class ConnectionNode {
+public class Connection {
 	
 	private Person person;
 	private ConnectionType connectionType;
@@ -15,7 +14,7 @@ public class ConnectionNode {
 	 * @param connectionType
 	 * @param mutual
 	 */
-	public ConnectionNode(Person person, ConnectionType connectionType, boolean isMutual) {
+	public Connection(Person person, ConnectionType connectionType, boolean isMutual) {
 		this.person = person;
 		this.connectionType = connectionType;
 		mutual = isMutual;

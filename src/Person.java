@@ -4,7 +4,7 @@ import java.util.Iterator;
 public class Person {
 	
 	private String name;
-	private ArrayList<ConnectionNode> connectionsTo;
+	private ArrayList<Connection> connectionsTo;
 	private boolean mainPerson;
 	
 	
@@ -29,12 +29,12 @@ public class Person {
 	 */
 	public void addConnection(Person person, ConnectionType connectionType, boolean mutual) {
 		// add the connection from this Person to the @param person
-		ConnectionNode connection = new ConnectionNode(person, connectionType, mutual);
+		Connection connection = new Connection(person, connectionType, mutual);
 		connectionsTo.add(connection);
 		
 		if(mutual) {
 			// make the connection from the @param person to this Person
-			ConnectionNode connection2 = new ConnectionNode(this, connectionType, mutual);
+			Connection connection2 = new Connection(this, connectionType, mutual);
 			person.connectionsTo.add(connection2);
 		}
 	}
@@ -45,7 +45,7 @@ public class Person {
 	 * @param connection
 	 */
 	public void addConnection(Person person, ConnectionType connection) {
-		addConnection(person, connection, false);
+		addConnection(person, connection, true);
 	}
 	
 	public String getName() {
@@ -60,13 +60,13 @@ public class Person {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		Iterator<ConnectionNode> it = connectionsTo.iterator();
+		Iterator<Connection> it = connectionsTo.iterator();
 		
 		if(!it.hasNext())
 			System.out.println(name + " has no connections");
 		
 		while(it.hasNext()) {
-			ConnectionNode currentConnection = it.next();
+			Connection currentConnection = it.next();
 			String currentPersonName = currentConnection.getPerson().name;
 			
 			

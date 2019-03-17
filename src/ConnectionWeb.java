@@ -1,5 +1,5 @@
 
-public class ConnectionsMap {
+public class ConnectionWeb {
 
 	public static void main(String[] args) {
 		
