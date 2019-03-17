@@ -7,8 +7,6 @@ public class Person {
 	ArrayList<ConnectionNode> connectionsTo;
 	
 	public Person(Person person, ConnectionType connectionType) {
-//		Node<Person, ConnectionType> connection = new Node(Person, connectionType)); 
-//		connectionsTo.add();
 		ConnectionNode connection = new ConnectionNode(person, connectionType, null);
 		connectionsTo.add(connection);
 	}
@@ -18,9 +16,33 @@ public class Person {
 		connectionsTo = new ArrayList<>();
 	}
 	
+	/**
+	 * If mutual is true, adds a new mutual connection between the calling Person and the @param person.<br>
+	 * If mutual is false, adds a one-way connection from the calling Person to the @param person.
+	 * 
+	 * @param person the Person this Person is adding a connection to
+	 * @param connectionType the type of connection this connection is
+	 * @param mutual if this connection is mutual or not. 
+	 */
+	public void addConnection(Person person, ConnectionType connectionType, boolean mutual) {
+		// add the connection from this Person to the @param person
+		ConnectionNode connection = new ConnectionNode(person, connectionType, null);
+		connectionsTo.add(connection);
+		
+		if(mutual) {
+			// make the connection from the @param person to this Person
+			ConnectionNode connection2 = new ConnectionNode(this, connectionType, null);
+			this.connectionsTo.add(connection2);
+		}
+	}
+	
+	/**
+	 * Adds a new connection from the calling Person to the @param Person
+	 * @param person
+	 * @param connection
+	 */
 	public void addConnection(Person person, ConnectionType connection) {
-		ConnectionNode connectNode = new ConnectionNode(person, connection, null);
-		connectionsTo.add(connectNode);
+		addConnection(person, connection, false);
 	}
 	
 	@Override
