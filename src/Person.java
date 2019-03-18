@@ -40,7 +40,7 @@ public class Person {
 	}
 	
 	/**
-	 * Adds a new connection from the calling Person to the @param Person
+	 * Add a new mutual connection from the calling Person to the @param Person
 	 * @param person
 	 * @param connection
 	 */
