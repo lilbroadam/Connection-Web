@@ -1,14 +1,9 @@
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
 import javax.swing.JFrame;
-import java.awt.Canvas;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.*;
+import java.awt.event.*;
 
 public class WebDrawer {
 	
@@ -31,32 +26,34 @@ public class WebDrawer {
 		centerY = height / 2;
 		
 		// search for the main person
-		for(Person currentPerson : people)
+		Iterator<Person> it = people.iterator();
+		while(it.hasNext() && mainPerson == null) {
+			Person currentPerson = it.next();
 			if(currentPerson.isMainPerson())
 				mainPerson = currentPerson;
+		}
 		if(mainPerson == null)
 			throw new IllegalStateException("The given people List must contain a main person");
 		
 		setPeopleCoords(people);
 		
-		frame = new JFrame("Connection Web");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		canvas = new WebDrawerCanvas();
 		canvas.setSize(width, height);
-		Mouse mouse = new Mouse();
-		canvas.addMouseListener(mouse);
-		canvas.addMouseMotionListener(mouse);
-		
+		frame = new JFrame("Connection Web");
 		frame.add(canvas);
 		frame.pack();
-		frame.setLocationRelativeTo(null); // set default window location to middle of screen
+		frame.setLocationRelativeTo(null); // set initial window location to middle of screen
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	public WebDrawer(List<Person> people, int width, int height) {
 		this(people, width, height, 25);
 	}
-		
+	
+	public WebDrawer(List<Person> people, int bubbleRadius) {
+		this(people, 600, 400, bubbleRadius);
+	}
+	
 	public WebDrawer(List<Person> people) {
 		this(people, 600, 400, 25);
 	}
@@ -76,7 +73,7 @@ public class WebDrawer {
 		bubbleSize = size;
 	}
 	
-	// assign the coordinates for each person
+	// assign the coordinates for each Person.
 	// coordinates are the center of the bubble of where the Person should be displayed in the Web
 	private void setPeopleCoords(List<Person> people) {
 		for(Person currentPerson : people) {
@@ -84,7 +81,10 @@ public class WebDrawer {
 			if(currentPerson.isMainPerson()) {
 				currentPerson.xCoord = centerX;
 				currentPerson.yCoord = centerY;
-			} else { // TODO this section needs to be determined better
+			} 
+			
+			// determine everyone else's coordinates
+			else { // TODO this section needs to be determined properly
 				Random r = new Random();
 				currentPerson.xCoord = r.nextInt(windowWidth);
 				currentPerson.yCoord = r.nextInt(windowHeight);
@@ -95,6 +95,12 @@ public class WebDrawer {
 	private class WebDrawerCanvas extends Canvas {
 		Graphics g;
 		
+		public WebDrawerCanvas() {
+			Mouse mouse = new Mouse();
+			this.addMouseListener(mouse);
+			this.addMouseMotionListener(mouse);
+		}
+		
 		public void paint(Graphics g) {
 			this.g = g;
 			
@@ -102,7 +108,7 @@ public class WebDrawer {
 		}
 		
 		private void drawWeb(List<Person> people) {
-			// TODO could this be turned into a T(N) appraoch instead of T(2N)?
+			// TODO could this be turned into a O(N) approach instead of O(N^2)?
 			drawPeople(people);
 			drawConnections(people);
 		}
@@ -123,7 +129,7 @@ public class WebDrawer {
 				// 		what does this even do again?
 				g.setFont(g.getFont().deriveFont(Font.PLAIN, 14));
 				
-				// draw the buble
+				// draw the bubble
 				g.drawOval(bubbleXCoord, bubbleYCoord, bubbleSize, bubbleSize);
 				g.drawString(name, bubbleXCoord + nameXOffset, bubbleYCoord + nameYOffset);
 			}
@@ -142,57 +148,35 @@ public class WebDrawer {
 					
 					g.drawLine(personXCoord, personYCoord, connectionXCoord, connectionYCoord);
 				}
-				
 			}
 		}
 		
-	}
-	
-	private class Mouse extends Frame implements MouseListener, MouseMotionListener {
-		
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			// TODO Auto-generated method stub
+		private class Mouse extends Frame implements MouseListener, MouseMotionListener {
 			
-		}
+			@Override
+			public void mouseClicked(MouseEvent e) {} // TODO
 
-		@Override
-		public void mousePressed(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+			@Override
+			public void mousePressed(MouseEvent e) {} // TODO
 
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+			@Override
+			public void mouseReleased(MouseEvent e) {} // TODO
 
-		@Override
-		public void mouseEntered(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+			@Override
+			public void mouseEntered(MouseEvent e) {} // TODO
 
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+			@Override
+			public void mouseExited(MouseEvent e) {} // TODO
 
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			// TODO Auto-generated method stub
-			if(e.getX() > windowWidth / 2) {
-				System.out.println("l'");
+			@Override
+			public void mouseDragged(MouseEvent e) { // TODO this method was just written for testing
+				mainPerson.xCoord = e.getX();
+				mainPerson.yCoord = e.getY();
+				canvas.repaint();
 			}
-			people.get(0).xCoord++;
-			canvas.repaint();
-		}
 
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			// TODO Auto-generated method stub
+			@Override
+			public void mouseMoved(MouseEvent e) {} // TODO
 			
 		}
 		
