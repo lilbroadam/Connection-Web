@@ -4,7 +4,11 @@ import java.util.Random;
 import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 public class WebDrawer {
 	
@@ -34,9 +38,14 @@ public class WebDrawer {
 			throw new IllegalStateException("The given people List must contain a main person");
 				
 		frame = new JFrame("Connection Web");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		canvas = new WebDrawerCanvas();
 		canvas.setSize(width, height);
+		Mouse mouse = new Mouse();
+		canvas.addMouseListener(mouse);
+		canvas.addMouseMotionListener(mouse);
+		
 		frame.add(canvas);
 		frame.pack();
 		frame.setLocationRelativeTo(null); // set default window location to middle of screen
@@ -85,9 +94,11 @@ public class WebDrawer {
 					currentPerson.xCoord = centerX;
 					currentPerson.yCoord = centerY;
 				} else { // TODO this section needs to be determined better
-					Random r = new Random();
-					currentPerson.xCoord = r.nextInt(windowWidth);
-					currentPerson.yCoord = r.nextInt(windowHeight);
+//					Random r = new Random();
+//					currentPerson.xCoord = r.nextInt(windowWidth);
+//					currentPerson.yCoord = r.nextInt(windowHeight);
+					currentPerson.xCoord++;
+					currentPerson.yCoord++;
 				}
 					
 			}
@@ -141,4 +152,53 @@ public class WebDrawer {
 		
 	}
 	
+	private class Mouse extends Frame implements MouseListener, MouseMotionListener {
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getX() > windowWidth / 2) {
+				System.out.println("l'");
+			}
+			people.get(0).xCoord++;
+			canvas.repaint();
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
 }
