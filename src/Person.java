@@ -1,17 +1,20 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Person {
 	
 	private String name;
-	private ArrayList<Connection> connectionsTo;
+	private ArrayList<Connection> connections;
 	private boolean mainPerson;
+	public int xCoord;
+	public int yCoord;
 	
 	
 	public Person(String name, boolean mainPerson) {
 		this.name = name;
 		this.mainPerson = mainPerson;
-		connectionsTo = new ArrayList<>();
+		connections = new ArrayList<>();
 	}
 	
 	public Person(String name) {
@@ -30,12 +33,12 @@ public class Person {
 	public void addConnection(Person person, ConnectionType connectionType, boolean mutual) {
 		// add the connection from this Person to the @param person
 		Connection connection = new Connection(person, connectionType, mutual);
-		connectionsTo.add(connection);
+		connections.add(connection);
 		
 		if(mutual) {
 			// make the connection from the @param person to this Person
 			Connection connection2 = new Connection(this, connectionType, mutual);
-			person.connectionsTo.add(connection2);
+			person.connections.add(connection2);
 		}
 	}
 	
@@ -48,7 +51,7 @@ public class Person {
 		addConnection(person, connection, true);
 	}
 	
-	public String getName() {
+	public String name() {
 		return name;
 	}
 	
@@ -56,11 +59,15 @@ public class Person {
 		return mainPerson;
 	}
 	
+	public List<Connection> connections() {
+		return connections;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		
-		Iterator<Connection> it = connectionsTo.iterator();
+		Iterator<Connection> it = connections.iterator();
 		
 		if(!it.hasNext())
 			System.out.println(name + " has no connections");

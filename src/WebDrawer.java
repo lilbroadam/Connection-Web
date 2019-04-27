@@ -1,4 +1,6 @@
 import java.util.List;
+import java.util.Random;
+
 import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Font;
@@ -16,18 +18,18 @@ public class WebDrawer {
 	private JFrame frame;
 	private Canvas canvas;
 	
-	public WebDrawer(List<Person> people, int width, int height, int bubble) {
+	public WebDrawer(List<Person> people, int width, int height, int bubbleRadius) {
 		this.people = people;
 		windowWidth = width;
 		windowHeight = height;
-		bubbleSize = bubble;
+		bubbleSize = bubbleRadius;
 		centerX = width / 2;
 		centerY = height / 2;
 		
 		// search for the main person
-		for(Person person : people)
-			if(person.isMainPerson())
-				mainPerson = person;
+		for(Person currentPerson : people)
+			if(currentPerson.isMainPerson())
+				mainPerson = currentPerson;
 		if(mainPerson == null)
 			throw new IllegalStateException("The given people List must contain a main person");
 				
@@ -48,7 +50,7 @@ public class WebDrawer {
 		this(people, 600, 400, 25);
 	}
 	
-	// the WebDrawer object must pass in true to this method to display the Web
+	// the WebDrawer object must pass true into this method to display the Web
 	public void setVisible(boolean visible) {
 		frame.setVisible(visible);
 	}
@@ -69,31 +71,74 @@ public class WebDrawer {
 		public void paint(Graphics g) {
 			this.g = g;
 			
-			// draw the main person in the center first
-			int bubbleOffset = bubbleSize / 2;
-			drawBubble(mainPerson, centerX - bubbleOffset, centerY - bubbleOffset);
-			
-			for(int i = 0; i < people.size(); i++)
-				if(people.get(i) != mainPerson)
-					drawBubble(people.get(i), i * bubbleSize, i * bubbleSize);
+			setPeopleCoords(people);
+			drawWeb(people);
 		}
 		
-		// x is the x coordinate of the top left of the bubble
-		// y is the y coordinate of the top left of the bubble
-		// TODO make a Bubble class to use as a wrapper class for Person but I forgot why
-		private void drawBubble(Person person, int x, int y) {
-			String name = person.getName();
+		// assign the coordinates for each person
+		// coordinates are the center coordinate of where the Person should be displayed in the Web
+		private void setPeopleCoords(List<Person> people) {
 			
-			int nameWidth = g.getFontMetrics().stringWidth(name);
-			int nameHeight = g.getFontMetrics().getAscent();			
-			int nameXOffset = bubbleSize/2 - nameWidth/2;
-			int nameYOffset = bubbleSize/2 + nameHeight/2;
+			for(Person currentPerson : people) {
+				// main Person goes in the middle
+				if(currentPerson.isMainPerson()) {
+					currentPerson.xCoord = centerX;
+					currentPerson.yCoord = centerY;
+				} else { // TODO this section needs to be determined better
+					Random r = new Random();
+					currentPerson.xCoord = r.nextInt(windowWidth);
+					currentPerson.yCoord = r.nextInt(windowHeight);
+				}
+					
+			}
 			
-			g.setFont(g.getFont().deriveFont(Font.PLAIN, 14));
-			
-			g.drawOval(x, y, bubbleSize, bubbleSize);
-			g.drawString(name, x + nameXOffset, y + nameYOffset);
 		}
+		
+		private void drawWeb(List<Person> people) {
+			// TODO could this be turned into a T(N) appraoch instead of T(2N)?
+			drawPeople(people);
+			drawConnections(people);
+		}
+		
+		// draws people in a "bubble" based on the buble size and the Person's xCoord and yCoord
+		private void drawPeople(List<Person> people) {
+			for(Person currentPerson : people) {
+				int halfBubble = bubbleSize/2;
+				String name = currentPerson.name();
+				int bubbleXCoord = currentPerson.xCoord - halfBubble;
+				int bubbleYCoord = currentPerson.yCoord - halfBubble;
+				int nameWidth = g.getFontMetrics().stringWidth(name);
+				int nameHeight = g.getFontMetrics().getAscent();
+				int nameXOffset = halfBubble - nameWidth/2;
+				int nameYOffset = halfBubble + nameHeight/2;
+				
+				// TODO shouldn't this go before nameWidth is determined?
+				// 		what does this even do again?
+				g.setFont(g.getFont().deriveFont(Font.PLAIN, 14));
+				
+				// draw the buble
+				g.drawOval(bubbleXCoord, bubbleYCoord, bubbleSize, bubbleSize);
+				g.drawString(name, bubbleXCoord + nameXOffset, bubbleYCoord + nameYOffset);
+			}
+		}
+		
+		// draw the Connection from every person to every Connection that Person has
+		// TODO different colors for different ConnectionTypes
+		private void drawConnections(List<Person> people) {
+			for(Person currentPerson : people) {
+				int personXCoord = currentPerson.xCoord;
+				int personYCoord = currentPerson.yCoord;
+				
+				for(Connection connection : currentPerson.connections()) {
+					int connectionXCoord = connection.getPerson().xCoord;
+					int connectionYCoord = connection.getPerson().yCoord;
+					
+					g.drawLine(personXCoord, personYCoord, connectionXCoord, connectionYCoord);
+				}
+				
+			}
+		}
+		
 	}
 	
 }

@@ -19,11 +19,8 @@ public class ConnectionWeb {
 		people.add(allen);
 		people.add(ana);
 		
-//		WebDrawer webDrawer = new WebDrawer(people);
 		WebDrawer webDrawer = new WebDrawer(people, width, height, bubbleSize);
 		webDrawer.setVisible(true);
-//		webDrawer.setWindowSize(width, height);
-//		webDrawer.setBubbleSize(bubbleSize);
 	}
 	
 }
