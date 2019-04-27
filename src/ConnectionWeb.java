@@ -51,7 +51,7 @@ public class ConnectionWeb {
 			Canvas canvas = new Web();
 			canvas.setSize(width, height);
 			frame.add(canvas);
-			frame.pack();
+//			frame.pack();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.setVisible(true);
 		}
@@ -73,6 +73,7 @@ public class ConnectionWeb {
 		
 		// x is the x coordinate of the top left of the bubble
 		// y is the y coordinate of the top left of the bubble
+		// TODO make a Bubble class to use as a wrapper class for Person but I forgot why
 		private void drawBubble(Person person, int x, int y) {
 			String name = person.getName();
 			
