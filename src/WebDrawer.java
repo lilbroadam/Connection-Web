@@ -20,7 +20,7 @@ public class WebDrawer {
 	private int centerX;
 	private int centerY;
 	private JFrame frame;
-	private Canvas canvas;
+	private WebDrawerCanvas canvas;
 	
 	public WebDrawer(List<Person> people, int width, int height, int bubbleRadius) {
 		this.people = people;
@@ -36,7 +36,9 @@ public class WebDrawer {
 				mainPerson = currentPerson;
 		if(mainPerson == null)
 			throw new IllegalStateException("The given people List must contain a main person");
-				
+		
+		setPeopleCoords(people);
+		
 		frame = new JFrame("Connection Web");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -74,35 +76,29 @@ public class WebDrawer {
 		bubbleSize = size;
 	}
 	
+	// assign the coordinates for each person
+	// coordinates are the center of the bubble of where the Person should be displayed in the Web
+	private void setPeopleCoords(List<Person> people) {
+		for(Person currentPerson : people) {
+			// main Person goes in the middle
+			if(currentPerson.isMainPerson()) {
+				currentPerson.xCoord = centerX;
+				currentPerson.yCoord = centerY;
+			} else { // TODO this section needs to be determined better
+				Random r = new Random();
+				currentPerson.xCoord = r.nextInt(windowWidth);
+				currentPerson.yCoord = r.nextInt(windowHeight);
+			}	
+		}
+	}
+	
 	private class WebDrawerCanvas extends Canvas {
 		Graphics g;
 		
 		public void paint(Graphics g) {
 			this.g = g;
 			
-			setPeopleCoords(people);
 			drawWeb(people);
-		}
-		
-		// assign the coordinates for each person
-		// coordinates are the center coordinate of where the Person should be displayed in the Web
-		private void setPeopleCoords(List<Person> people) {
-			
-			for(Person currentPerson : people) {
-				// main Person goes in the middle
-				if(currentPerson.isMainPerson()) {
-					currentPerson.xCoord = centerX;
-					currentPerson.yCoord = centerY;
-				} else { // TODO this section needs to be determined better
-//					Random r = new Random();
-//					currentPerson.xCoord = r.nextInt(windowWidth);
-//					currentPerson.yCoord = r.nextInt(windowHeight);
-					currentPerson.xCoord++;
-					currentPerson.yCoord++;
-				}
-					
-			}
-			
 		}
 		
 		private void drawWeb(List<Person> people) {
@@ -111,7 +107,7 @@ public class WebDrawer {
 			drawConnections(people);
 		}
 		
-		// draws people in a "bubble" based on the buble size and the Person's xCoord and yCoord
+		// draws people in a "bubble" based on the bubble size and the Person's xCoord and yCoord
 		private void drawPeople(List<Person> people) {
 			for(Person currentPerson : people) {
 				int halfBubble = bubbleSize/2;
